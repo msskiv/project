@@ -187,14 +187,19 @@ function selectGem() {
     if (oldParent == newParent.previousSibling || oldParent == newParent.nextSibling){
 
       oldParent.append(gemsSelected.newGem);
-      id = oldParent.id
-      gems[matrixColor[0]][matrixColor[1]] = gemsSelected.oldGem.color;
-      colGems[matrixColor[1]][matrixColor[0]] = gemsSelected.oldGem.color;
+      id = newParent.id
+      let matrixColor = id.split(".");
+      gems[matrixColor[0]][matrixColor[1]] = gemsSelected.oldGem.getAttribute('color');
+      colGems[matrixColor[1]][matrixColor[0]] = gemsSelected.oldGem.getAttribute('color');
+      
       
       newParent.append(gemsSelected.oldGem);
-      id = newParent.id
-      gems[matrixColor[0]][matrixColor[1]] = gemsSelected.newGem.color;
-      colGems[matrixColor[1]][matrixColor[0]] = gemsSelected.newGem.color;
+      id = oldParent.id
+      matrixColor = id.split(".");
+      gems[matrixColor[0]][matrixColor[1]] = gemsSelected.newGem.getAttribute('color');
+      colGems[matrixColor[1]][matrixColor[0]] = gemsSelected.newGem.getAttribute('color');
+      console.log(gems[matrixColor[0]][matrixColor[1]])
+      //console.log(colGems)
       
      // gemsSelected = {oldGem: null, newGem: null};
     }
