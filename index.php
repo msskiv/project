@@ -45,6 +45,10 @@ let gems = [
   [x, x, x, x, x, x, x],*/
 ];
 let colGems = [];
+let gemsSelected = {oldGem: null, newGem: null};
+
+
+
 
 function createStone(color, cell, id){// , id
   let father = document.getElementById(id)
@@ -55,6 +59,8 @@ function createStone(color, cell, id){// , id
   stone.setAttribute("class", "col-1 m-1");
   stone.style.backgroundColor = color;
   stone.style.cursor = "pointer";
+  
+  stone.onclick = selectGem;//вызов по щелчку
   //stone.id = id;
   //var divStone = document.querySelector("div:last-child > div:last-child");
   
@@ -69,6 +75,7 @@ function createStone(color, cell, id){// , id
       stone.setAttribute("color", "green");
       break;
   }
+  
   father.append(stone);
 
 }
@@ -85,35 +92,28 @@ function createStone(color, cell, id){// , id
       for (j=0; j<N; j++){
         var color = colors[Math.floor(Math.random()*colors.length)];
         let cell = document.createElement('div');
-        id = cell.id = i + "." + j;
+        id = cell.id = i + "." + j; //задаем уникальный номер каждой "ячейке" матрицы
         cell.setAttribute("class", "cell");
-        //cell.setAttribute('y',i);
-        //cell.setAttribute('x',j);
         rowDiv.append(cell);
-        createStone(color, cell, id);//, id
+        createStone(color, cell, id);
         gems[i].push(color);
-        /*document.write("<div class='col-1 m-1'></div>");
-        var root = document.querySelector("div.col-1");
-        // устанавливаем стиль
-        root.style.backgroundColor = color;
-        // получаем значение стиля
-        document.write(root.style.color)*/;
       } 
     }
     //кнопка для проверки findRow
     let input = document.createElement("input");
     input.type = "button";
     input.value = "POP row";
-    input.className = 'btn btn-primary';
+    input.className = 'btn btn-primary m-1';
     input.onclick = findRow;
     containerDiv.appendChild(input);
     input = document.createElement("input");
     input.type = "button";
     input.value = "POP column";
-    input.className = 'btn btn-primary';
+    input.className = 'btn btn-primary m-1';
     input.onclick = findCol;
     containerDiv.appendChild(input);
-    //
+    
+
     return gems;
   }
   
@@ -140,6 +140,70 @@ function newStone(id){
   
 }
 
+
+
+//------------подготовка к функции перемены мест камней
+
+/*let firstEl = document.getElementById(id); 
+  let firstSon = firstEl.firstElementChild;
+let secondEl = document.getElementById(id).nextSibling;
+  let secondSon = secondEl.firstElementChild;
+firstEl.append(secondSon);
+secondElappend(firstSon);*/
+
+/*---------------ПРИМЕР-----------------
+let firstElem = document.getElementById(id);
+let secondElem = document.getElementById(id).nextSibling;
+let oldGem = secondElem.firstElementChild;
+let newGem = firstElem.firstElementChild;
+firstElem.append(oldGem);
+secondElem.append(newGem);
+------
+let gemsSelected = {oldGem: null, newGem: null}
+
+gem.onclick = selectGem;
+function selectGem() {
+ //Функция записывает в камни в объект gemsSelected
+}
+
+*/
+
+
+
+
+function selectGem() {
+
+  let selected = this; // див камня
+  if (gemsSelected.oldGem == null){  
+    gemsSelected.oldGem = selected;// запись в объект
+    //selected.firstElementChild.style.border = "3px solid magenta";
+  }else if(gemsSelected.oldGem != null && gemsSelected.newGem == null){
+    gemsSelected.newGem = selected;// запись в объект
+  //}else if(gemsSelected.oldGem != null && gemsSelected.newGem != null){
+    console.log(gemsSelected);
+    
+    let oldParent = gemsSelected.oldGem.parentNode;
+    let newParent = gemsSelected.newGem.parentNode;
+    if (oldParent == newParent.previousSibling || oldParent == newParent.nextSibling){
+
+      oldParent.append(gemsSelected.newGem);
+      id = oldParent.id
+      gems[matrixColor[0]][matrixColor[1]] = gemsSelected.oldGem.color;
+      colGems[matrixColor[1]][matrixColor[0]] = gemsSelected.oldGem.color;
+      
+      newParent.append(gemsSelected.oldGem);
+      id = newParent.id
+      gems[matrixColor[0]][matrixColor[1]] = gemsSelected.newGem.color;
+      colGems[matrixColor[1]][matrixColor[0]] = gemsSelected.newGem.color;
+      
+     // gemsSelected = {oldGem: null, newGem: null};
+    }
+      gemsSelected = {oldGem: null, newGem: null};
+  }
+  //let gem = document.getElementById(id);
+  
+ //Функция записывает в камни в объект gemsSelected
+}
 
 
 
@@ -192,10 +256,9 @@ let targets = []; // для сбора айдишников тех элемен�
     for (let j=0; j<colGems[i].length; j++){
 
        if(colGems[i][j] == colGems[i][j+1]){
-        console.log(i,j);
+        //console.log(i,j);
         colOfStones.push(colGems[i][j]);
         
-        //!!!
         targets.push([j] + "." + [i]);
         console.log(targets);
       }else{
@@ -205,16 +268,11 @@ let targets = []; // для сбора айдишников тех элемен�
         }else if(colOfStones.length + 1 >= 3){//если ряд камней получился больше 2-х
           colOfStones = [];// отработал, больше не нужен
           
-            //targets.push([i] + "." + [j]);//добавим айдишник последнего камня
-            //console.log(targets);
-            //console.log("эта ",j);
-          
             for (let u=0; u<targets.length; u++){//ниже берем по одному айдишнику и применяем функции удаления камня и замены его случайным
               var pop = targets.pop()
               popStone(pop);
               newStone(pop);
             }
-            //targets = []; //закоментирован так как должен сам таким стать
         }
       }
     }
@@ -234,8 +292,8 @@ for (let i=0; i<gems.length; i++){
   }
 }
 console.log(colGems)
-//popStone("0.0");
-//newStone("0.0");
+
+
 
 </script>
     <!-- Optional JavaScript -->
