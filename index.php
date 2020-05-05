@@ -28,7 +28,10 @@
   }
   
 </style>
-
+<script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
 <script>
 
 let colors = ["red", "blue", "green"];
@@ -46,6 +49,7 @@ let gems = [
 ];
 let colGems = [];
 let gemsSelected = {oldGem: null, newGem: null};
+let popStones = 0;
 
 
 
@@ -99,6 +103,14 @@ function createStone(color, cell, id){// , id
         gems[i].push(color);
       } 
     }
+    //------счет-------
+    
+   let scoreDiv = document.createElement('div');
+   scoreDiv.className = "row m-2";
+   scoreDiv.id = "score";
+   containerDiv.appendChild(scoreDiv);
+   let score = document.getElementById('score');
+   score.innerHTML = '<span>Ваш счет: </span><span class="popStones">0</span>';
     //кнопка для проверки findRow
     let input = document.createElement("input");
     input.type = "button";
@@ -121,9 +133,11 @@ function createStone(color, cell, id){// , id
 function popStone(id){
   
   let father = document.getElementById(id)
-  console.log("дичь: ", father, id);
+  console.log(id);
   let dead = father.firstChild;
   dead.remove();
+  popStones++;
+  $(".popStones").html(popStones);
 }
 
 function newStone(id){
@@ -205,9 +219,9 @@ function selectGem() {
     let botCoord = (coords[0] - -1) + '.' + coords[1]; //пишем координату нижнего соседа
     let topNeighbor = document.getElementById(topCoord);
     let botNeighbor = document.getElementById(botCoord);
-    console.log("координаты", coords)
-    console.log(topCoord, "верхний")
-    console.log(botCoord, "нижний")
+    //console.log("координаты", coords)
+    //console.log(topCoord, "верхний")
+    //console.log(botCoord, "нижний")
     
     
     
@@ -225,8 +239,8 @@ function selectGem() {
       matrixColor = id.split(".");
       gems[matrixColor[0]][matrixColor[1]] = gemsSelected.newGem.getAttribute('color');
       colGems[matrixColor[1]][matrixColor[0]] = gemsSelected.newGem.getAttribute('color');
-      console.log(gems)
-      console.log(colGems)
+      //console.log(gems)
+      //console.log(colGems)
       
      // gemsSelected = {oldGem: null, newGem: null};
     }
@@ -269,7 +283,11 @@ let targets = []; // для сбора айдишников тех элемен�
             //console.log("эта ",j);
           
             for (let u=0; u<targets.length; u++){//ниже берем по одному айдишнику и применяем функции удаления камня и замены его случайным
-              let pop = targets.pop()
+              targets.unshift("болванка");
+              console.log(targets);
+
+              let pop = targets.pop();
+              console.log(targets);
               popStone(pop);
               newStone(pop);
             }
@@ -292,7 +310,7 @@ let targets = []; // для сбора айдишников тех элемен�
         colOfStones.push(colGems[i][j]);
         targets.push([j] + "." + [i]);
         
-        console.log(targets);
+        
         
       }else{
         if(colOfStones.length < 2){
@@ -302,11 +320,17 @@ let targets = []; // для сбора айдишников тех элемен�
           colOfStones = [];// отработал, больше не нужен
           targets.push([j] + "." + [i]);//добавим айдишник последнего камня
           
+          
             for (let u=0; u<targets.length; u++){//ниже берем по одному айдишнику и применяем функции удаления камня и замены его случайным
+              targets.unshift("болванка");
+              console.log(targets);
+
               let pop = targets.pop();
+              console.log(targets);
               popStone(pop);
               newStone(pop);
             }
+            targets = [];//сброс
         }
       }
     }
@@ -332,7 +356,7 @@ console.log(colGems)
 </script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   </body>
