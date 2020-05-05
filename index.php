@@ -136,6 +136,18 @@ function newStone(id){
     stone.setAttribute("class", "col-1 m-1");
     stone.style.backgroundColor = color;
     stone.style.cursor = "pointer";
+    stone.onclick = selectGem;//вызов по щелчку
+    switch(color){
+    case 'red':
+      stone.setAttribute("color", "red");
+      break;
+    case 'blue':
+      stone.setAttribute("color", "blue");
+      break;
+    case 'green':
+      stone.setAttribute("color", "green");
+      break;
+    }
   father.append(stone);
   
 }
@@ -198,8 +210,8 @@ function selectGem() {
       matrixColor = id.split(".");
       gems[matrixColor[0]][matrixColor[1]] = gemsSelected.newGem.getAttribute('color');
       colGems[matrixColor[1]][matrixColor[0]] = gemsSelected.newGem.getAttribute('color');
-      console.log(gems[matrixColor[0]][matrixColor[1]])
-      //console.log(colGems)
+      console.log(gems)
+      console.log(colGems)
       
      // gemsSelected = {oldGem: null, newGem: null};
     }
@@ -242,7 +254,7 @@ let targets = []; // для сбора айдишников тех элемен�
             //console.log("эта ",j);
           
             for (let u=0; u<targets.length; u++){//ниже берем по одному айдишнику и применяем функции удаления камня и замены его случайным
-              var pop = targets.pop()
+              let pop = targets.pop()
               popStone(pop);
               newStone(pop);
             }
@@ -263,18 +275,20 @@ let targets = []; // для сбора айдишников тех элемен�
        if(colGems[i][j] == colGems[i][j+1]){
         //console.log(i,j);
         colOfStones.push(colGems[i][j]);
-        
         targets.push([j] + "." + [i]);
+        
         console.log(targets);
+        
       }else{
-        if(colOfStones.length + 1 < 3){
+        if(colOfStones.length < 2){
           colOfStones = [];//сброс
           targets = [];//сброс
-        }else if(colOfStones.length + 1 >= 3){//если ряд камней получился больше 2-х
+        }else if(colOfStones.length >= 2){//если ряд камней получился больше 2-х
           colOfStones = [];// отработал, больше не нужен
+          targets.push([j] + "." + [i]);//добавим айдишник последнего камня
           
             for (let u=0; u<targets.length; u++){//ниже берем по одному айдишнику и применяем функции удаления камня и замены его случайным
-              var pop = targets.pop()
+              let pop = targets.pop();
               popStone(pop);
               newStone(pop);
             }
