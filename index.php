@@ -186,17 +186,32 @@ function selectGem() {
 function selectGem() {
 
   let selected = this; // див камня
+  
   if (gemsSelected.oldGem == null){  
     gemsSelected.oldGem = selected;// запись в объект
     //selected.firstElementChild.style.border = "3px solid magenta";
   }else if(gemsSelected.oldGem != null && gemsSelected.newGem == null){
     gemsSelected.newGem = selected;// запись в объект
   //}else if(gemsSelected.oldGem != null && gemsSelected.newGem != null){
-    console.log(gemsSelected);
-    
+    //console.log(gemsSelected);
+    // по вертикали
     let oldParent = gemsSelected.oldGem.parentNode;
     let newParent = gemsSelected.newGem.parentNode;
-    if (oldParent == newParent.previousSibling || oldParent == newParent.nextSibling){
+    
+    //по горизонтали
+    let fatherID = this.parentNode.id;
+    let coords = fatherID.split("."); //потрошим айди в массив
+    let topCoord = (coords[0] - 1) + '.' + coords[1]; //пишем координату верхнего соседа
+    let botCoord = (coords[0] - -1) + '.' + coords[1]; //пишем координату нижнего соседа
+    let topNeighbor = document.getElementById(topCoord);
+    let botNeighbor = document.getElementById(botCoord);
+    console.log("координаты", coords)
+    console.log(topCoord, "верхний")
+    console.log(botCoord, "нижний")
+    
+    
+    
+    if ((oldParent == newParent.previousSibling || oldParent == newParent.nextSibling) || (oldParent == topNeighbor || oldParent == botNeighbor)){
 
       oldParent.append(gemsSelected.newGem);
       id = newParent.id
